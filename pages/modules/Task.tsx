@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import clsx from "clsx";
 import { ListGroup } from "react-bootstrap";
 import styled from "styled-components";
-import { TTask } from "../common/types";
+import { TTask, TUser } from "../common/types";
 import Avatar from "../components/Avatar";
 
 type TaskProps = {
@@ -34,9 +34,9 @@ const Task: FC<TaskProps> = ({ task }) => {
       })}
     >
       <AvatarWrapper>
-        {((task.assignees ?? []).length > 0
-          ? task.assignees
-          : [{ id: "empty", username: "No assignee", initials: "-" }]
+        {((task?.assignees ?? []).length > 0
+          ? (task?.assignees as TUser[])
+          : [{ id: 123123, username: "No assignee", initials: "-" } as TUser]
         ).map((user, userIndex) => (
           <AvatarStyled
             key={user.id}
