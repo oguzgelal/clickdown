@@ -1,19 +1,21 @@
 import React, { FC, useMemo, useState } from "react";
 import { Button, Accordion, ListGroup, Stack } from "react-bootstrap";
 import styled from "styled-components";
-import { TFolder, TList, TSpace, TTeam } from "../common/types";
+import { TFolder, TList, TSpace, TStatus, TTeam } from "../common/types";
 
 type FiltersProps = {
   space: TSpace;
   folders: TFolder[];
   lists: TList[];
+  selectedList?: TList;
+  selectedListStatuses?: TStatus[];
+  selectedListSet: React.Dispatch<React.SetStateAction<TList | undefined>>;
+  selectedFolder?: TFolder;
+  selectedFolderSet: React.Dispatch<React.SetStateAction<TFolder | undefined>>;
+  selectedStatus?: TStatus;
+  selectedStatusSet: React.Dispatch<React.SetStateAction<TStatus | undefined>>;
 };
 
-const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 22px;
-`;
 
 const FilterPillWrapper = styled.div`
   display: flex;
@@ -30,17 +32,38 @@ const FilterPillWrapper = styled.div`
 
 const AccordionStyled = styled(Accordion)`
   width: 100%;
+  .accordion-header {
+    button {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: inherit;
+    }
+  }
 `;
 
-const Filters: FC<FiltersProps> = ({ space, lists, folders }) => {
-  const [folderFilter, folderFilterSet] = useState<
+const Filters: FC<FiltersProps> = ({
+  space,
+  lists,
+  folders,
+  selectedList,
+  selectedListSet,
+  selectedFolder,
+  selectedFolderSet,
+  selectedListStatuses,
+  selectedStatus,
+  selectedStatusSet,
+}) => {
+  const [folderFiltered, folderFilteredSet] = useState<
     string | number | undefined
   >();
 
   const filters = useMemo(() => {
     const statuses = space?.statuses ?? [];
 
-    const useStatuses = statuses.sort((a, b) => a.orderIndex - b.orderIndex);
+    const useStatuses = (
+      selectedListStatuses ??
+      selectedFolder?.statuses ??
+      statuses
+    ).sort((a, b) => a.orderIndex - b.orderIndex);
     const useFolders = folders
       .sort((a, b) => a.orderindex - b.orderindex)
       .filter((folder) => !folder.archived && !folder.hidden);
@@ -58,6 +81,15 @@ const Filters: FC<FiltersProps> = ({ space, lists, folders }) => {
             {useStatuses.map((status) => (
               <ListGroup.Item
                 key={status.id}
+                action
+                onClick={() => {
+                  selectedStatusSet(
+                    selectedStatus?.status === status.status
+                      ? undefined
+                      : status
+                  );
+                }}
+                active={selectedStatus?.status === status.status}
                 style={{
                   borderLeft: `4px solid ${status.color}`,
                   textTransform: "capitalize",
@@ -80,11 +112,13 @@ const Filters: FC<FiltersProps> = ({ space, lists, folders }) => {
               {useFolders.map((folder) => (
                 <Button
                   key={folder.id}
-                  variant={folderFilter === folder.id ? "primary" : "secondary"}
+                  variant={
+                    folderFiltered === folder.id ? "primary" : "secondary"
+                  }
                   size="sm"
                   onClick={() =>
-                    folderFilterSet(
-                      folderFilter === folder.id ? undefined : folder.id
+                    folderFilteredSet(
+                      folderFiltered === folder.id ? undefined : folder.id
                     )
                   }
                   style={{
@@ -98,9 +132,9 @@ const Filters: FC<FiltersProps> = ({ space, lists, folders }) => {
               ))}
               <Button
                 style={{ fontSize: 11, borderRadius: 200, padding: "0 6px" }}
-                variant={folderFilter === -1 ? "primary" : "secondary"}
+                variant={folderFiltered === -1 ? "primary" : "secondary"}
                 onClick={() =>
-                  folderFilterSet(folderFilter === -1 ? undefined : -1)
+                  folderFilteredSet(folderFiltered === -1 ? undefined : -1)
                 }
                 size="sm"
               >
@@ -109,16 +143,27 @@ const Filters: FC<FiltersProps> = ({ space, lists, folders }) => {
             </FilterPillWrapper>
 
             {/* folderless lists */}
-            {(!folderFilter || folderFilter === -1) &&
+            {(!folderFiltered || folderFiltered === -1) &&
               useLists.map((list) => (
-                <ListGroup.Item key={list.id}>{list.name}</ListGroup.Item>
+                <ListGroup.Item
+                  key={list.id}
+                  action
+                  active={selectedList?.id === list.id}
+                  onClick={() =>
+                    selectedListSet(
+                      selectedList?.id === list.id ? undefined : list
+                    )
+                  }
+                >
+                  {list.name}
+                </ListGroup.Item>
               ))}
 
             {/* folders -> lists */}
-            {(!folderFilter || typeof folderFilter === "string") &&
+            {(!folderFiltered || typeof folderFiltered === "string") &&
               useFolders
                 .map((folder) => {
-                  return folderFilter && folderFilter !== folder.id
+                  return folderFiltered && folderFiltered !== folder.id
                     ? []
                     : folder.lists
                         .sort((a, b) => {
@@ -132,7 +177,21 @@ const Filters: FC<FiltersProps> = ({ space, lists, folders }) => {
                           }
                         })
                         .map((list) => (
-                          <ListGroup.Item key={list.id}>
+                          <ListGroup.Item
+                            key={list.id}
+                            action
+                            onClick={() => {
+                              selectedListSet(
+                                selectedList?.id === list.id ? undefined : list
+                              );
+                              selectedFolderSet(
+                                selectedList?.id === list.id
+                                  ? undefined
+                                  : folder
+                              );
+                            }}
+                            active={selectedList?.id === list.id}
+                          >
                             {list.name}
                           </ListGroup.Item>
                         ));
@@ -142,10 +201,23 @@ const Filters: FC<FiltersProps> = ({ space, lists, folders }) => {
         ),
       },
     ];
-  }, [space, lists, folders, folderFilter, folderFilterSet]);
+  }, [
+    space,
+    lists,
+    folders,
+    folderFiltered,
+    folderFilteredSet,
+    selectedList,
+    selectedListSet,
+    selectedFolder,
+    selectedFolderSet,
+    selectedListStatuses,
+    selectedStatus,
+    selectedStatusSet,
+  ]);
 
   return (
-    <Wrapper>
+    <>
       <Stack gap={4}>
         {filters.map((filter) => (
           <AccordionStyled key={filter.id} defaultActiveKey="0">
@@ -158,7 +230,7 @@ const Filters: FC<FiltersProps> = ({ space, lists, folders }) => {
           </AccordionStyled>
         ))}
       </Stack>
-    </Wrapper>
+    </>
   );
 };
 

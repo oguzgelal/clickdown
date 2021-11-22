@@ -3,7 +3,9 @@ import { TOKEN_KEY } from "../common/constants";
 
 const request = (endpoint: string) => {
   const token = localStorage.getItem(TOKEN_KEY);
-  if (!token) return;
+  if (!token) {
+    throw new Error("token not found");
+  }
   return axios({
     url: "/api/request",
     method: "post",

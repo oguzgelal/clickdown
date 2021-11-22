@@ -32,7 +32,7 @@ export type TList = {
   id: string;
   name: string;
   orderindex: number;
-  statuses: TStatus[];
+  statuses?: TStatus[];
   folder?: TFolder;
   archived: boolean;
   start_date?: string;
@@ -45,8 +45,15 @@ export type TMember = {
 
 export type TUser = {
   id: number;
-  color: string;
+  color?: string;
   initials: string;
   username: string;
   profilePicture?: string;
+};
+
+export type TTask = {
+  id: string;
+  name: string;
+  assignees?: TUser[]
+  status?: TStatus
 };
