@@ -1,6 +1,6 @@
 import useSWR from "swr";
-import { AUTIFY_SPACE_ENGINEERING } from "../common/constants";
-import { TList } from "../common/types";
+import { AUTIFY_SPACE_ENGINEERING } from "../../common/constants";
+import { TList } from "../../common/types";
 import request from "./request";
 
 export const useFolderlessListsKeys = () => ["useFolderlessLists"];

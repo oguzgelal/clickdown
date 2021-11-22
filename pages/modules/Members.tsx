@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import styled from "styled-components";
-import { TTeam } from "../common/types";
+import { TTeam } from "../../common/types";
 import Avatar from "../components/Avatar";
 
 type MembersProps = {

@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import clsx from "clsx";
 import { ListGroup } from "react-bootstrap";
 import styled from "styled-components";
-import { TTask, TUser } from "../common/types";
+import { TTask, TUser } from "../../common/types";
 import Avatar from "../components/Avatar";
 
 type TaskProps = {

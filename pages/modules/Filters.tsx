@@ -1,7 +1,7 @@
 import React, { FC, useMemo, useState } from "react";
 import { Button, Accordion, ListGroup, Stack } from "react-bootstrap";
 import styled from "styled-components";
-import { TFolder, TList, TSpace, TStatus, TTeam } from "../common/types";
+import { TFolder, TList, TSpace, TStatus } from "../../common/types";
 
 type FiltersProps = {
   space: TSpace;
@@ -15,7 +15,6 @@ type FiltersProps = {
   selectedStatus?: TStatus;
   selectedStatusSet: React.Dispatch<React.SetStateAction<TStatus | undefined>>;
 };
-
 
 const FilterPillWrapper = styled.div`
   display: flex;

@@ -1,6 +1,6 @@
 import useSWR from "swr";
-import { AUTIFY_TEAM_ID } from "../common/constants";
-import { TList, TStatus, TTask } from "../common/types";
+import { AUTIFY_TEAM_ID } from "../../common/constants";
+import { TList, TStatus, TTask } from "../../common/types";
 import request from "./request";
 
 type TParams = {
