@@ -1,5 +1,5 @@
 import axios from "axios";
-import { TOKEN_KEY } from "../../common/constants";
+import { TOKEN_KEY } from "../common/constants";
 
 const request = (endpoint: string) => {
   const token = localStorage.getItem(TOKEN_KEY);

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import type { NextPage } from "next";
 import { Button, Form } from "react-bootstrap";
 import { useRouter } from "next/dist/client/router";
-import PageCenter from "./components/PageCenter";
+import PageCenter from "../components/PageCenter";
 import { TOKEN_KEY } from "../common/constants";
 
 const Home: NextPage = () => {

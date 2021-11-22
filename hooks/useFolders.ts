@@ -1,6 +1,6 @@
 import useSWR from "swr";
-import { AUTIFY_SPACE_ENGINEERING } from "../../common/constants";
-import { TFolder } from "../../common/types";
+import { AUTIFY_SPACE_ENGINEERING } from "../common/constants";
+import { TFolder } from "../common/types";
 import request from "./request";
 
 export const useFoldersKeys = () => ["useFolders"];

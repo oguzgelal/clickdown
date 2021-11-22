@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
-import PageLoading from "./components/PageLoading";
+import { ListGroup, Spinner } from "react-bootstrap";
+import PageLoading from "../components/PageLoading";
 import { useRouter } from "next/dist/client/router";
 import { TOKEN_KEY } from "../common/constants";
 import { TFolder, TList, TMember, TStatus } from "../common/types";
-import useFolders from "./hooks/useFolders";
-import useFolderlessLists from "./hooks/useFolderlessLists";
-import useTeam from "./hooks/useTeam";
+import useFolders from "../hooks/useFolders";
+import useFolderlessLists from "../hooks/useFolderlessLists";
+import useTeam from "../hooks/useTeam";
 import styled from "styled-components";
-import Filters from "./modules/Filters";
-import useSpace from "./hooks/useSpace";
-import Members from "./modules/Members";
-import request from "./hooks/request";
-import useTasks from "./hooks/useTasks";
-import { ListGroup, Spinner } from "react-bootstrap";
-import Task from "./modules/Task";
+import Filters from "../modules/Filters";
+import useSpace from "../hooks/useSpace";
+import Members from "../modules/Members";
+import request from "../hooks/request";
+import useTasks from "../hooks/useTasks";
+import Task from "../modules/Task";
 
 const Wrapper = styled.div`
   display: flex;

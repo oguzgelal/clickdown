@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import styled from "styled-components";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { TUser } from "../../common/types";
+import { TUser } from "../common/types";
 
 type AvatarProps = {
   user: TUser;

@@ -1,6 +1,6 @@
 import useSWR from "swr";
-import { AUTIFY_SPACE_ENGINEERING } from "../../common/constants";
-import { TSpace } from "../../common/types";
+import { AUTIFY_SPACE_ENGINEERING } from "../common/constants";
+import { TSpace } from "../common/types";
 import request from "./request";
 
 export const useSpaceKeys = () => ["useSpace"];

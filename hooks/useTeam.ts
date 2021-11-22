@@ -1,6 +1,6 @@
 import useSWR from "swr";
-import { AUTIFY_TEAM_ID } from "../../common/constants";
-import { TTeam } from "../../common/types";
+import { AUTIFY_TEAM_ID } from "../common/constants";
+import { TTeam } from "../common/types";
 import request from "./request";
 
 export const useTeamKeys = () => ["useTeam"];
