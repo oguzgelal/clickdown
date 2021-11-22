@@ -83,7 +83,6 @@ const Wrapper = styled(ListGroup.Item)<{
     }
 
     border-top: 1px solid rgba(0,0,0,.125) !important;
-    border-radius: 4px;
 
     & + button {
       border-top: 1px solid rgba(0,0,0,.125) !important;

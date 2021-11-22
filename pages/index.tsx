@@ -53,7 +53,9 @@ const Home: NextPage = () => {
   const [selectedStatus, selectedStatusSet] = useState<TStatus>();
 
   useEffect(() => {
-    tokenSet(localStorage.getItem(TOKEN_KEY));
+    const t = localStorage.getItem(TOKEN_KEY)
+    if (!t) router.replace("/login")
+    else tokenSet(t);
   }, []);
 
   const { folders, foldersLoading } = useFolders();
@@ -82,8 +84,6 @@ const Home: NextPage = () => {
     }
   }, [selectedList, selectedListStatusesSet]);
 
-  console.log("tasks", tasks);
-
   if (foldersLoading || listsLoading || spaceLoading || teamLoading) {
     return <PageLoading />;
   }
@@ -106,10 +106,9 @@ const Home: NextPage = () => {
       </FiltersWrapper>
       <ContentsWrapper>
         {tasksLoading && <Spinner animation="border" variant="primary" />}
-
-        {!tasksLoading && (
+        {!tasksLoading && tasks && tasks.length > 0 && (
           <ListGroup>
-            {tasks.map((task) => (
+            {(tasks ?? []).map((task) => (
               <Task key={task.id} task={task} />
             ))}
           </ListGroup>

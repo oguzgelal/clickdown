@@ -31,12 +31,6 @@ const FilterPillWrapper = styled.div`
 
 const AccordionStyled = styled(Accordion)`
   width: 100%;
-  .accordion-header {
-    button {
-      background-color: rgba(0, 0, 0, 0.05);
-      color: inherit;
-    }
-  }
 `;
 
 const Filters: FC<FiltersProps> = ({
@@ -61,12 +55,13 @@ const Filters: FC<FiltersProps> = ({
     const useStatuses = (
       selectedListStatuses ??
       selectedFolder?.statuses ??
-      statuses
+      statuses ??
+      []
     ).sort((a, b) => a.orderIndex - b.orderIndex);
-    const useFolders = folders
+    const useFolders = (folders ?? [])
       .sort((a, b) => a.orderindex - b.orderindex)
       .filter((folder) => !folder.archived && !folder.hidden);
-    const useLists = lists
+    const useLists = (lists ?? [])
       .sort((a, b) => a.orderindex - b.orderindex)
       .filter((list) => !list.archived);
 
