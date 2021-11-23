@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import { ListGroup, Spinner } from "react-bootstrap";
 import PageLoading from "../components/PageLoading";
 import { useRouter } from "next/dist/client/router";
-import { TOKEN_KEY } from "../common/constants";
+import { SELECTED_LIST_KEY, TOKEN_KEY } from "../common/constants";
 import { TFolder, TList, TStatus, TUser } from "../common/types";
 import useFolders from "../hooks/useFolders";
 import useFolderlessLists from "../hooks/useFolderlessLists";
@@ -46,8 +46,7 @@ const MembersWrapper = styled.div`
 const Home: NextPage = () => {
   const router = useRouter();
   const [selectedListStatuses, selectedListStatusesSet] = useState<TStatus[]>();
-  const [selectedList, selectedListSet] = useState<TList>();
-  const [selectedFolder, selectedFolderSet] = useState<TFolder>();
+  const [selectedList, selectedListSet] = useState<TList["id"]>();
   const [selectedStatus, selectedStatusSet] = useState<TStatus>();
   const [selectedUser, selectedUserSet] = useState<TUser["id"]>();
   const [userTicketCounts, userTicketCountsSet] = useState<
@@ -56,6 +55,8 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const t = localStorage.getItem(TOKEN_KEY);
+    const list = localStorage.getItem(SELECTED_LIST_KEY);
+    if (list) selectedListSet(list);
     if (!t) router.replace("/login");
   }, [router]);
 
@@ -64,7 +65,7 @@ const Home: NextPage = () => {
   const { team, teamLoading } = useTeam();
   const { space, spaceLoading } = useSpace();
   const { tasks, tasksLoading, tasksRevalidate } = useTasks({
-    list_id: selectedList?.id,
+    list_id: selectedList,
     status: selectedStatus?.status,
     user_id: selectedUser,
     page: 0,
@@ -73,7 +74,7 @@ const Home: NextPage = () => {
   // fetch selected list data
   useEffect(() => {
     if (selectedList) {
-      request(`/list/${selectedList.id}`).then((res) => {
+      request(`/list/${selectedList}`).then((res) => {
         const list = res.data as TList;
         selectedListStatusesSet(list?.statuses ?? undefined);
       });
@@ -119,8 +120,6 @@ const Home: NextPage = () => {
           selectedList={selectedList}
           selectedListSet={selectedListSet}
           selectedListStatuses={selectedListStatuses}
-          selectedFolder={selectedFolder}
-          selectedFolderSet={selectedFolderSet}
           selectedStatus={selectedStatus}
           selectedStatusSet={selectedStatusSet}
         />
