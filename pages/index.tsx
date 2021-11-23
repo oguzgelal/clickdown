@@ -101,7 +101,7 @@ const Home: NextPage = () => {
   const tasksOrdered = useMemo(() => {
     if (!tasks) return [];
     return tasks.sort((a, b) => {
-      return (a.status?.orderindex ?? 0) - (b.status?.orderindex ?? 0);
+      return (b.status?.orderindex ?? 0) - (a.status?.orderindex ?? 0);
     });
   }, [tasks]);
 
