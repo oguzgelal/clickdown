@@ -97,6 +97,14 @@ const Home: NextPage = () => {
     }
   }, [tasks, userTicketCountsSet]);
 
+  // sort tasks by status order
+  const tasksOrdered = useMemo(() => {
+    if (!tasks) return [];
+    return tasks.sort((a, b) => {
+      return (a.status?.orderindex ?? 0) - (b.status?.orderindex ?? 0);
+    });
+  }, [tasks]);
+
   if (foldersLoading || listsLoading || spaceLoading || teamLoading) {
     return <PageLoading />;
   }
@@ -130,9 +138,9 @@ const Home: NextPage = () => {
             <Spinner animation="border" variant="primary" />
           </div>
         )}
-        {!tasksLoading && tasks && tasks.length > 0 && (
+        {!tasksLoading && tasksOrdered && tasksOrdered.length > 0 && (
           <ListGroup>
-            {(tasks ?? []).map((task) => (
+            {(tasksOrdered ?? []).map((task) => (
               <Task
                 key={task.id}
                 task={task}
@@ -142,7 +150,7 @@ const Home: NextPage = () => {
             ))}
           </ListGroup>
         )}
-        {!tasksLoading && (!tasks || tasks.length === 0) && (
+        {!tasksLoading && (!tasksOrdered || tasksOrdered.length === 0) && (
           <div
             style={{
               display: "flex",

@@ -24,6 +24,7 @@ export type TStatus = {
   id: string;
   color: string;
   orderIndex: number;
+  orderindex: number;
   status: string;
   type: string;
 };
