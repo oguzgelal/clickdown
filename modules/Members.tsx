@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { Badge } from "react-bootstrap";
 import styled from "styled-components";
+import { SELECTED_USER_KEY } from "../common/constants";
 import { TMember, TUser } from "../common/types";
 import Avatar from "../components/Avatar";
 
@@ -58,6 +59,14 @@ const Members: FC<MembersProps> = ({
                   selectedUserSet(
                     member.user.id === selectedUser ? undefined : member.user.id
                   );
+                  if (member.user.id === selectedUser) {
+                    localStorage.removeItem(SELECTED_USER_KEY);
+                  } else {
+                    localStorage.setItem(
+                      SELECTED_USER_KEY,
+                      `${member.user.id ?? ""}`
+                    );
+                  }
                 }}
               />
               <AvatarBadge bg="secondary">

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import {
   SELECTED_FOLDER_FILTER_KEY,
   SELECTED_LIST_KEY,
+  SELECTED_STATUS_KEY,
 } from "../common/constants";
 import { TFolder, TList, TSpace, TStatus } from "../common/types";
 
@@ -16,8 +17,10 @@ type FiltersProps = {
   selectedListSet: React.Dispatch<
     React.SetStateAction<TList["id"] | undefined>
   >;
-  selectedStatus?: TStatus;
-  selectedStatusSet: React.Dispatch<React.SetStateAction<TStatus | undefined>>;
+  selectedStatus?: TStatus["status"];
+  selectedStatusSet: React.Dispatch<
+    React.SetStateAction<TStatus["status"] | undefined>
+  >;
 };
 
 const FilterPillWrapper = styled.div`
@@ -82,12 +85,15 @@ const Filters: FC<FiltersProps> = ({
                 action
                 onClick={() => {
                   selectedStatusSet(
-                    selectedStatus?.status === status.status
-                      ? undefined
-                      : status
+                    selectedStatus === status.status ? undefined : status.status
                   );
+                  if (selectedStatus === status.status) {
+                    localStorage.removeItem(SELECTED_STATUS_KEY);
+                  } else {
+                    localStorage.setItem(SELECTED_STATUS_KEY, status.status);
+                  }
                 }}
-                active={selectedStatus?.status === status.status}
+                active={selectedStatus === status.status}
                 style={{
                   borderLeft: `4px solid ${status.color}`,
                   textTransform: "capitalize",

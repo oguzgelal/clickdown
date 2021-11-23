@@ -3,7 +3,12 @@ import type { NextPage } from "next";
 import { ListGroup, Spinner } from "react-bootstrap";
 import PageLoading from "../components/PageLoading";
 import { useRouter } from "next/dist/client/router";
-import { SELECTED_LIST_KEY, TOKEN_KEY } from "../common/constants";
+import {
+  SELECTED_LIST_KEY,
+  SELECTED_STATUS_KEY,
+  SELECTED_USER_KEY,
+  TOKEN_KEY,
+} from "../common/constants";
 import { TFolder, TList, TStatus, TUser } from "../common/types";
 import useFolders from "../hooks/useFolders";
 import useFolderlessLists from "../hooks/useFolderlessLists";
@@ -47,7 +52,7 @@ const Home: NextPage = () => {
   const router = useRouter();
   const [selectedListStatuses, selectedListStatusesSet] = useState<TStatus[]>();
   const [selectedList, selectedListSet] = useState<TList["id"]>();
-  const [selectedStatus, selectedStatusSet] = useState<TStatus>();
+  const [selectedStatus, selectedStatusSet] = useState<TStatus["status"]>();
   const [selectedUser, selectedUserSet] = useState<TUser["id"]>();
   const [userTicketCounts, userTicketCountsSet] = useState<
     Record<string, number>
@@ -56,7 +61,11 @@ const Home: NextPage = () => {
   useEffect(() => {
     const t = localStorage.getItem(TOKEN_KEY);
     const list = localStorage.getItem(SELECTED_LIST_KEY);
+    const user = localStorage.getItem(SELECTED_USER_KEY);
+    const status = localStorage.getItem(SELECTED_STATUS_KEY);
     if (list) selectedListSet(list);
+    if (user) selectedUserSet(parseInt(user));
+    if (status) selectedStatusSet(status);
     if (!t) router.replace("/login");
   }, [router]);
 
@@ -66,7 +75,7 @@ const Home: NextPage = () => {
   const { space, spaceLoading } = useSpace();
   const { tasks, tasksLoading, tasksRevalidate } = useTasks({
     list_id: selectedList,
-    status: selectedStatus?.status,
+    status: selectedStatus,
     user_id: selectedUser,
     page: 0,
   });
