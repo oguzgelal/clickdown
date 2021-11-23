@@ -56,4 +56,7 @@ export type TTask = {
   name: string;
   assignees?: TUser[];
   status?: TStatus;
+  description?: string;
+  text_content?: string
+  url: string
 };

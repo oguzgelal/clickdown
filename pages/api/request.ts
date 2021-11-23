@@ -1,25 +1,34 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios, { AxiosPromise, AxiosResponse } from "axios";
 
-const requestFactory =
-  (token: string) =>
-  <T>(path: string) => {
-    return axios.get<T>(`https://api.clickup.com/api/v2${path}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-    });
-  };
+const request = (args: {
+  token: string;
+  path: string;
+  update?: boolean;
+  data?: Record<string, unknown>;
+}) => {
+  return axios(`https://api.clickup.com/api/v2${args.path}`, {
+    method: args.update ? "put" : "get",
+    data: args.update ? args.data : undefined,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: args.token,
+    },
+  });
+};
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { token, endpoint } = req.body;
-  const request = requestFactory(token);
+  const { token, endpoint, data, update } = req.body;
 
-  const response = await request(endpoint);
+  try {
+    const response = await request({ token, path: endpoint, data, update });
 
-  res.status(200).json(response.data);
+    res.status(200).json(response.data);
+  } catch (err) {
+    console.log("err", err);
+    res.status(200).json({ ok: true });
+  }
 }

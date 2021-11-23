@@ -18,7 +18,7 @@ export const useTasksKeys = ({
 }: TParams) => [list_id, status, user_id, page, "useTasks"];
 
 const useTasks = (args: TParams) => {
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     useTasksKeys(args),
     (listId, statusId, userId, page) => {
       const queryString = new URLSearchParams();
@@ -40,6 +40,7 @@ const useTasks = (args: TParams) => {
     tasks: data?.data?.tasks as TTask[],
     tasksLoading: !data?.data && !error,
     tasksError: error,
+    tasksRevalidate: mutate,
   };
 };
 

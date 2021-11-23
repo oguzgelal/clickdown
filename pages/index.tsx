@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 import { ListGroup, Spinner } from "react-bootstrap";
 import PageLoading from "../components/PageLoading";
@@ -63,7 +63,7 @@ const Home: NextPage = () => {
   const { lists, listsLoading } = useFolderlessLists();
   const { team, teamLoading } = useTeam();
   const { space, spaceLoading } = useSpace();
-  const { tasks, tasksLoading } = useTasks({
+  const { tasks, tasksLoading, tasksRevalidate } = useTasks({
     list_id: selectedList?.id,
     status: selectedStatus?.status,
     user_id: selectedUser,
@@ -118,13 +118,41 @@ const Home: NextPage = () => {
         />
       </FiltersWrapper>
       <ContentsWrapper>
-        {tasksLoading && <Spinner animation="border" variant="primary" />}
+        {tasksLoading && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "calc(100vh - 44px)",
+            }}
+          >
+            <Spinner animation="border" variant="primary" />
+          </div>
+        )}
         {!tasksLoading && tasks && tasks.length > 0 && (
           <ListGroup>
             {(tasks ?? []).map((task) => (
-              <Task key={task.id} task={task} />
+              <Task
+                key={task.id}
+                task={task}
+                selectedListStatuses={selectedListStatuses}
+                tasksRevalidate={tasksRevalidate}
+              />
             ))}
           </ListGroup>
+        )}
+        {!tasksLoading && (!tasks || tasks.length === 0) && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "calc(100vh - 44px)",
+            }}
+          >
+            No tasks found
+          </div>
         )}
       </ContentsWrapper>
       <MembersWrapper>
