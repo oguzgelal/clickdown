@@ -54,6 +54,6 @@ export type TUser = {
 export type TTask = {
   id: string;
   name: string;
-  assignees?: TUser[]
-  status?: TStatus
+  assignees?: TUser[];
+  status?: TStatus;
 };

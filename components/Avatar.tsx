@@ -9,10 +9,54 @@ type AvatarProps = {
   className?: string;
   style?: Record<string, unknown>;
   tooltipPlacement?: "left" | "top";
+  onClick?: () => void;
+  active?: boolean
 };
+
+const Avatar: FC<AvatarProps> = ({
+  className,
+  style,
+  user,
+  size = 42,
+  tooltipPlacement = "left",
+  onClick,
+  active,
+}) => {
+  const clickableProps = onClick
+    ? {
+        role: "button",
+        tabIndex: 0,
+        onClick,
+      }
+    : {};
+
+  return (
+    <OverlayTrigger
+      key={user?.id}
+      placement={tooltipPlacement}
+      overlay={<Tooltip>{user.username}</Tooltip>}
+    >
+      <Wrapper
+        size={size}
+        className={className}
+        style={style}
+        active={active}
+        {...clickableProps}
+      >
+        {user?.profilePicture && (
+          <AvatarImg src={user?.profilePicture} alt={user?.username} />
+        )}
+        {!user?.profilePicture && user?.initials}
+      </Wrapper>
+    </OverlayTrigger>
+  );
+};
+
+export default Avatar;
 
 const Wrapper = styled.div<{
   size: number;
+  active?: boolean
 }>`
   flex-shrink: 0;
   border-radius: 50%;
@@ -28,33 +72,13 @@ const Wrapper = styled.div<{
   overflow: hidden;
   font-weight: bold;
   color: gray;
+
+  ${p => p.active && `
+    border: 3px solid var(--bs-primary);
+    box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+  `}
 `;
 
 const AvatarImg = styled.img`
   width: 100%;
 `;
-
-const Avatar: FC<AvatarProps> = ({
-  className,
-  style,
-  user,
-  size = 42,
-  tooltipPlacement = "left",
-}) => {
-  return (
-    <OverlayTrigger
-      key={user?.id}
-      placement={tooltipPlacement}
-      overlay={<Tooltip>{user.username}</Tooltip>}
-    >
-      <Wrapper size={size} className={className} style={style}>
-        {user?.profilePicture && (
-          <AvatarImg src={user?.profilePicture} alt={user?.username} />
-        )}
-        {!user?.profilePicture && user?.initials}
-      </Wrapper>
-    </OverlayTrigger>
-  );
-};
-
-export default Avatar;

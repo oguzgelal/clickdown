@@ -4,7 +4,7 @@ import { ListGroup, Spinner } from "react-bootstrap";
 import PageLoading from "../components/PageLoading";
 import { useRouter } from "next/dist/client/router";
 import { TOKEN_KEY } from "../common/constants";
-import { TFolder, TList, TMember, TStatus } from "../common/types";
+import { TFolder, TList, TStatus, TUser } from "../common/types";
 import useFolders from "../hooks/useFolders";
 import useFolderlessLists from "../hooks/useFolderlessLists";
 import useTeam from "../hooks/useTeam";
@@ -45,18 +45,19 @@ const MembersWrapper = styled.div`
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const [token, tokenSet] = useState<string | null>();
   const [selectedListStatuses, selectedListStatusesSet] = useState<TStatus[]>();
-  const [selectedListMembers, selectedListMembersSet] = useState<TMember[]>();
   const [selectedList, selectedListSet] = useState<TList>();
   const [selectedFolder, selectedFolderSet] = useState<TFolder>();
   const [selectedStatus, selectedStatusSet] = useState<TStatus>();
+  const [selectedUser, selectedUserSet] = useState<TUser["id"]>();
+  const [userTicketCounts, userTicketCountsSet] = useState<
+    Record<string, number>
+  >({});
 
   useEffect(() => {
-    const t = localStorage.getItem(TOKEN_KEY)
-    if (!t) router.replace("/login")
-    else tokenSet(t);
-  }, []);
+    const t = localStorage.getItem(TOKEN_KEY);
+    if (!t) router.replace("/login");
+  }, [router]);
 
   const { folders, foldersLoading } = useFolders();
   const { lists, listsLoading } = useFolderlessLists();
@@ -65,6 +66,7 @@ const Home: NextPage = () => {
   const { tasks, tasksLoading } = useTasks({
     list_id: selectedList?.id,
     status: selectedStatus?.status,
+    user_id: selectedUser,
     page: 0,
   });
 
@@ -75,14 +77,25 @@ const Home: NextPage = () => {
         const list = res.data as TList;
         selectedListStatusesSet(list?.statuses ?? undefined);
       });
-      request(`/list/${selectedList.id}/member`).then((res) => {
-        const members = res.data.members as TMember[];
-        selectedListMembersSet(members);
-      });
     } else {
       selectedListStatusesSet(undefined);
     }
   }, [selectedList, selectedListStatusesSet]);
+
+  // get assignee ticket counts
+  useEffect(() => {
+    if (Array.isArray(tasks)) {
+      const ticketCounts = tasks.reduce<Record<string, number>>((acc, task) => {
+        const counts = { ...acc };
+        (task?.assignees ?? []).forEach((assignee) => {
+          if (!counts[assignee.id]) counts[assignee.id] = 0;
+          counts[assignee.id] += 1;
+        });
+        return counts;
+      }, {});
+      userTicketCountsSet(ticketCounts);
+    }
+  }, [tasks, userTicketCountsSet]);
 
   if (foldersLoading || listsLoading || spaceLoading || teamLoading) {
     return <PageLoading />;
@@ -115,7 +128,12 @@ const Home: NextPage = () => {
         )}
       </ContentsWrapper>
       <MembersWrapper>
-        <Members team={team} />
+        <Members
+          members={team?.members ?? []}
+          ticketCounts={userTicketCounts}
+          selectedUser={selectedUser}
+          selectedUserSet={selectedUserSet}
+        />
       </MembersWrapper>
     </Wrapper>
   );
