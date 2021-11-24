@@ -6,3 +6,4 @@ export const SELECTED_FOLDER_FILTER_KEY = "clickup__selected_folder_filter";
 export const AUTIFY_TEAM_ID = "3645654";
 export const AUTIFY_SPACE_ENGINEERING = "3675092";
 export const AUTIFY_LIST_BACKLOG = "14228760";
+export const MOBILE_BREAKPOINT = 1100

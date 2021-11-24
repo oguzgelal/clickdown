@@ -4,12 +4,13 @@ import { ListGroup, Spinner } from "react-bootstrap";
 import PageLoading from "../components/PageLoading";
 import { useRouter } from "next/dist/client/router";
 import {
+  MOBILE_BREAKPOINT,
   SELECTED_LIST_KEY,
   SELECTED_STATUS_KEY,
   SELECTED_USER_KEY,
   TOKEN_KEY,
 } from "../common/constants";
-import { TFolder, TList, TStatus, TUser } from "../common/types";
+import { TList, TStatus, TUser } from "../common/types";
 import useFolders from "../hooks/useFolders";
 import useFolderlessLists from "../hooks/useFolderlessLists";
 import useTeam from "../hooks/useTeam";
@@ -23,14 +24,23 @@ import Task from "../modules/Task";
 
 const Wrapper = styled.div`
   display: flex;
+  @media (max-width: ${MOBILE_BREAKPOINT}px) {
+    flex-flow: column;
+  }
 `;
 
 const FiltersWrapper = styled.div`
   flex-grow: 1;
   flex-shrink: 0;
   width: 420px;
+  @media (max-width: ${MOBILE_BREAKPOINT}px) {
+    width: 100%;
+  }
   padding: 22px;
   padding-right: 0;
+  @media (max-width: ${MOBILE_BREAKPOINT}px) {
+    padding-right: 22px;
+  }
 `;
 
 const ContentsWrapper = styled.div`
@@ -39,6 +49,9 @@ const ContentsWrapper = styled.div`
   width: 100%;
   border-right: 1px solid rgba(0, 0, 0, 0.125);
   padding: 22px;
+  @media (max-width: ${MOBILE_BREAKPOINT}px) {
+    order: 9;
+  }
 `;
 
 const MembersWrapper = styled.div`
@@ -46,6 +59,17 @@ const MembersWrapper = styled.div`
   flex-shrink: 0;
   width: 70px;
   padding: 22px 0;
+  @media (max-width: ${MOBILE_BREAKPOINT}px) {
+    padding: 22px;
+    width: 100%;
+    & > div {
+      flex-flow: row;
+      flex-wrap: wrap;
+      & > div {
+        margin: 8px;
+      }
+    }
+  }
 `;
 
 const Home: NextPage = () => {
